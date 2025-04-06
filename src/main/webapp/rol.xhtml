@@ -1,0 +1,119 @@
+<ui:composition template="/template.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">Rol</ui:define>
+
+    <ui:define name="content">
+        <h2>Gestión de Roles</h2>
+        <p>Aquí puedes administrar los roles del sistema.</p>
+        <div class="card crud-demo">
+            <h:form id="form">
+                <p:growl id="messages" showDetail="true" />
+        
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="New" icon="pi pi-plus" actionListener="#{rolBean.openNew}"
+                            update=":dialogs:manage-rol-content" oncomplete="PF('manageRolDialog').show()"
+                            styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-rol-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+        
+                <p:dataTable id="dt-rols" widgetVar="dtRols" var="rol" value="#{rolBean.rols}"
+                    reflow="true" styleClass="rols-table" selection="#{rolBean.selectedRols}"
+                    rowKey="#{rol.idRol}" paginator="true" rows="10" selectionRowMode="add" paginatorPosition="bottom">
+                    <f:facet name="header">
+                        <div class="rols-table-header">
+                            <span style="font-weight: bold">Rol</span>
+                            <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtRols').filter()" placeholder="Search" />
+                            </span>
+                        </div>
+                    </f:facet>
+        
+        
+        
+                    <p:column selectionMode="multiple" exportable="false"></p:column>
+        
+                    <p:column headerText="Code" sortBy="#{rol.idRol}" filterBy="#{rol.idRol}">
+                        <h:outputText value="#{rol.idRol}" />
+                    </p:column>
+        
+                    <p:column headerText="Name" sortBy="#{rol.nombre}" filterBy="#{rol.nombre}">
+                        <h:outputText value="#{rol.nombre}" />
+                    </p:column>
+        
+                    <p:column headerText="Descripcion" sortBy="#{rol.descripcion}" filterBy="#{rol.descripcion}">
+                        <h:outputText value="#{rol.descripcion}" />
+                    </p:column>
+        
+                    <p:column headerText="Status" sortBy="#{rol.estado}"
+                        filterBy="#{rol.estado}">
+                        <h:outputText 
+                            value="#{rol.estado}" />
+                    </p:column>
+                    <p:column exportable="false" ariaHeaderText="Actions">
+                        <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-rol-content"
+                            oncomplete="PF('manageRolDialog').show()"
+                            styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{rol}" target="#{rolBean.selectedRol}" />
+                            <p:resetInput target=":dialogs:manage-rol-content" />
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         process="@this"
+                                         oncomplete="PF('deleteRolDialog').show()">
+                            <f:setPropertyActionListener value="#{rol}" target="#{rolBean.selectedRol}" />
+                        </p:commandButton>
+                    </p:column>
+        
+                </p:dataTable>
+            </h:form>
+        
+            <h:form id="dialogs">
+                <p:dialog header="Rols Details" showEffect="fade" modal="true" widgetVar="manageRolDialog"
+                    responsive="true">
+                    <p:outputPanel id="manage-rol-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty rolBean.selectedRol}">
+                            <div class="field">
+                                <p:outputLabel for="name">Name</p:outputLabel>
+                                <p:inputText id="name" value="#{rolBean.selectedRol.nombre}" required="true" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="description">Description</p:outputLabel>
+                                <p:inputTextarea id="description" value="#{rolBean.selectedRol.descripcion}" />
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+        
+                    <f:facet name="footer">
+                        <p:commandButton value="Save" icon="pi pi-check" actionListener="#{rolBean.saveRol}"
+                            update="manage-rol-content" process="manage-rol-content @this" />
+                        <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('manageRolDialog').hide()"
+                            class="ui-button-secondary" type="button" />
+                    </f:facet>
+                </p:dialog>
+        
+                <p:confirmDialog widgetVar="deleteRolDialog" showEffect="fade" width="300"
+                    message="Desea Borrar Rol?" header="Confirm" severity="warn">
+                    <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{rolBean.deleteRol}"
+                        process="@this"
+                        oncomplete="PF('deleteRolDialog').hide()" />
+                    <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                        onclick="PF('deleteRolDialog').hide()" />
+                </p:confirmDialog>
+        
+                <p:confirmDialog global="true" showEffect="fade" width="300">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                        icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

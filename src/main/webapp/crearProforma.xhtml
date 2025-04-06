@@ -1,0 +1,105 @@
+<ui:composition template="/template.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">Nueva Proforma</ui:define>
+
+    <ui:define name="content">
+        <h:form id="formProforma">
+
+            <p:panel header="Cabecera de Proforma">
+                <div class="ui-fluid formgrid grid">
+
+                    <div class="field col-6">
+                        <p:outputLabel for="numero" value="Número"/>
+                        <p:inputText id="numero" value="#{crearProformaBean.proformaCab.numero}" required="true"/>
+                    </div>
+
+                    <div class="field col-6">
+                        <p:outputLabel for="fecha" value="Fecha de Validez"/>
+                        <p:calendar id="fecha" value="#{crearProformaBean.proformaCab.feValidez}" pattern="dd/MM/yyyy"/>
+                    </div>
+
+                    <div class="field col-6">
+                        <p:outputLabel for="condicionPago" value="Condición de Pago"/>
+                        <p:inputText id="condicionPago" value="#{crearProformaBean.proformaCab.condicionPago}"/>
+                    </div>
+
+                    <div class="field col-6">
+                        <p:outputLabel for="formaPago" value="Forma de Pago"/>
+                        <p:inputText id="formaPago" value="#{crearProformaBean.proformaCab.formaPago}"/>
+                    </div>
+
+                    <div class="field col-6">
+                        <p:outputLabel value="Cliente"/>
+                        <p:inputText value="#{crearProformaBean.proformaCab.persona.nombre}" readonly="true"/>
+                        <p:commandButton value="Seleccionar Persona" oncomplete="PF('dlgPersona').show()"
+                                         update=":formPersona"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:spacer height="30"/>
+
+            <p:panel header="Detalle de Productos">
+                <p:commandButton value="Agregar Producto" icon="pi pi-plus"
+                                 oncomplete="PF('dlgProducto').show()" update=":formProducto"/>
+
+                <p:dataTable value="#{crearProformaBean.detalles}" var="detalle" editable="true">
+                    <p:column headerText="Producto">
+                        #{detalle.producto.nombre}
+                    </p:column>
+                    <p:column headerText="Cantidad">
+                        <p:inputText value="#{detalle.cantidad}"/>
+                    </p:column>
+                    <p:column headerText="Acción">
+                        <p:commandButton icon="pi pi-trash" actionListener="#{crearProformaBean.eliminarDetalle(detalle)}"
+                                         update="@form"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <p:spacer height="20"/>
+
+            <p:commandButton value="Guardar Proforma" icon="pi pi-save"
+                             actionListener="#{crearProformaBean.guardarProforma}"
+                             update="@form" />
+
+        </h:form>
+
+        <p:dialog header="Seleccionar Persona" widgetVar="dlgPersona" modal="true" width="600">
+            <h:form id="formPersona">
+                <p:dataTable var="persona" value="#{crearProformaBean.listaPersonas}">
+                    <p:column headerText="Nombre">
+                        #{persona.nombre}
+                    </p:column>
+                    <p:column headerText="Seleccionar">
+                        <p:commandButton value="Seleccionar" actionListener="#{crearProformaBean.seleccionarPersona(persona)}"
+                                         oncomplete="PF('dlgPersona').hide()" update=":formProforma"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Agregar Producto" widgetVar="dlgProducto" modal="true" width="700">
+            <h:form id="formProducto">
+                <p:dataTable var="producto" value="#{crearProformaBean.listaProductos}">
+                    <p:column headerText="Nombre">
+                        #{producto.nombre}
+                    </p:column>
+                    <p:column headerText="Precio">
+                        #{producto.precio}
+                    </p:column>
+                    <p:column headerText="Agregar">
+                        <p:commandButton value="Agregar"
+                                         actionListener="#{crearProformaBean.agregarProducto(producto)}"
+                                         oncomplete="PF('dlgProducto').hide()" update=":formProforma"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

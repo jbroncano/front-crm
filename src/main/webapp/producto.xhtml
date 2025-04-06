@@ -1,0 +1,127 @@
+<ui:composition template="/template.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">Producto</ui:define>
+
+    <ui:define name="content">
+        <h2>Gestión de Productos</h2>
+        <p>Aquí puedes administrar los productos.</p>
+        <div class="card crud-demo">
+            <h:form id="form">
+                <p:growl id="messages" showDetail="true" />
+        
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="New" icon="pi pi-plus" actionListener="#{productoBean.openNew}"
+                            update=":dialogs:manage-producto-content" oncomplete="PF('manageProductoDialog').show()"
+                            styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-producto-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+        
+                <p:dataTable id="dt-productos" widgetVar="dtProductos" var="producto" value="#{productoBean.productos}"
+                    reflow="true" styleClass="productos-table" selection="#{productoBean.selectedProducts}"
+                    rowKey="#{producto.idProducto}" paginator="true" rows="10" selectionRowMode="add" paginatorPosition="bottom">
+                    <f:facet name="header">
+                        <div class="productos-table-header">
+                            <span style="font-weight: bold">Producto</span>
+                            <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtProductos').filter()" placeholder="Search" />
+                            </span>
+                        </div>
+                    </f:facet>
+        
+        
+        
+                    <p:column selectionMode="multiple" exportable="false"></p:column>
+        
+                    <p:column headerText="Code" sortBy="#{producto.idProducto}" filterBy="#{producto.idProducto}">
+                        <h:outputText value="#{producto.idProducto}" />
+                    </p:column>
+        
+                    <p:column headerText="Name" sortBy="#{producto.nombre}" filterBy="#{producto.nombre}">
+                        <h:outputText value="#{producto.nombre}" />
+                    </p:column>
+        
+                    <p:column headerText="Descripcion" sortBy="#{producto.descripcion}" filterBy="#{producto.descripcion}">
+                        <h:outputText value="#{producto.descripcion}" />
+                    </p:column>
+
+                            
+                    <p:column headerText="Precio" sortBy="#{producto.precio}" filterBy="#{producto.precio}">
+                        <h:outputText value="#{producto.precio}" />
+                    </p:column>
+        
+                    <p:column headerText="Status" sortBy="#{producto.estado}"
+                        filterBy="#{producto.estado}">
+                        <h:outputText 
+                            value="#{producto.estado}" />
+                    </p:column>
+                    <p:column exportable="false" ariaHeaderText="Actions">
+                        <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-producto-content"
+                            oncomplete="PF('manageProductoDialog').show()"
+                            styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{producto}" target="#{productoBean.selectedProducto}" />
+                            <p:resetInput target=":dialogs:manage-producto-content" />
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         process="@this"
+                                         oncomplete="PF('deleteProductoDialog').show()">
+                            <f:setPropertyActionListener value="#{producto}" target="#{productoBean.selectedProducto}" />
+                        </p:commandButton>
+                    </p:column>
+        
+                </p:dataTable>
+            </h:form>
+        
+            <h:form id="dialogs">
+                <p:dialog header="Producto Details" showEffect="fade" modal="true" widgetVar="manageProductoDialog"
+                    responsive="true">
+                    <p:outputPanel id="manage-producto-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty productoBean.selectedProducto}">
+                            <div class="field">
+                                <p:outputLabel for="name">Name</p:outputLabel>
+                                <p:inputText id="name" value="#{productoBean.selectedProducto.nombre}" required="true" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="description">Description</p:outputLabel>
+                                <p:inputTextarea id="description" value="#{productoBean.selectedProducto.descripcion}" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="precio">Precio</p:outputLabel>
+                                <p:inputNumber id="precio" value="#{productoBean.selectedProducto.precio}"  modifyValueOnWheel="false" />
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+        
+                    <f:facet name="footer">
+                        <p:commandButton value="Save" icon="pi pi-check" actionListener="#{productoBean.savePructo}"
+                            update="manage-producto-content" process="manage-producto-content @this" />
+                        <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('manageProductoDialog').hide()"
+                            class="ui-button-secondary" type="button" />
+                    </f:facet>
+                </p:dialog>
+        
+                <p:confirmDialog widgetVar="deleteProductoDialog" showEffect="fade" width="300"
+                    message="Desea Borrar Producto?" header="Confirm" severity="warn">
+                    <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{productoBean.deleteProducto}"
+                        process="@this"
+                        oncomplete="PF('deleteProductoDialog').hide()" />
+                    <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                        onclick="PF('deleteProductoDialog').hide()" />
+                </p:confirmDialog>
+        
+                <p:confirmDialog global="true" showEffect="fade" width="300">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                        icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

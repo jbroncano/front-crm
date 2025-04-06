@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title><ui:insert name="title">Aplicación</ui:insert></title>
+</h:head>
+
+<h:body>
+    <h:form id="menuForm">
+        <!-- Menú superior -->
+        <p:menubar>
+            <p:menuitem value="Inicio" icon="pi pi-home" outcome="home" />
+            <p:menuitem value="Rol" icon="pi pi-id-card" outcome="rol" />
+            <p:menuitem value="Usuario" icon="pi pi-user" outcome="usuario" />
+            <p:menuitem value="Persona" icon="pi pi-users" outcome="persona" />
+            <p:menuitem value="Producto" icon="pi pi-box" outcome="producto" />
+            <p:menuitem value="Preformas" icon="pi pi-copy" outcome="preformas" />
+            <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"
+                        action="#{loginBean.logout}" immediate="true" />
+        </p:menubar>
+    </h:form>
+
+    <div style="padding: 20px;">
+        <ui:insert name="content" />
+    </div>
+</h:body>
+</html>
